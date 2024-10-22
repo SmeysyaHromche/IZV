@@ -17,13 +17,37 @@ from typing import List, Callable, Dict, Any
 
 
 def distance(a: np.array, b: np.array) -> np.array:
+    '''
+    Numerics calculations of Euclidean distance
+    Parametrs:
+        a: [np.array]: input parametrs to math function
+        b: [np.array]: input parametrs to math function
+    Return:
+        [np.array]: Euclidean distance
+    '''
     return np.sqrt(np.sum(np.square(a-b), axis=-1))
 
 
-def generate_graph(a: List[float], show_figure: bool = False, save_path: str | None = None):
-    def format_func(value, tick_number):
+def generate_graph(a: List[float], show_figure: bool = False, save_path: str | None = None)->None:
+    '''
+    Generating a graph with different coefficients
+    Parametrs:
+        a: List[float]: input parametrs to math function
+        show_figure: [bool=False]: flag for plots showing
+        save_path:   [str | None]: path to saving output of plotting
+    Returns:
+        None
+    '''
+
+
+    def format_func(value, tick_number)->str:
         '''
-        Fromat an axis markings to the pi dimension
+        Formating an axis markings to the pi dimension
+        Parametrs:
+            value: [numbers]: ticks marking
+            tick_number: : 
+        Return:
+            [str]: ticks marking in target format
         '''
         N = int(np.round(2 * value / np.pi))
         if N == 0:
@@ -35,13 +59,16 @@ def generate_graph(a: List[float], show_figure: bool = False, save_path: str | N
         else:
             return rf'$\frac{{{N}}}{{2}}{{\pi}}$' 
     
-    def func(a, x):
+    
+    def func(a:np.array, x:np.array)->np.array:
         '''
         Mathematical implementation of target function
         '''
         a_np = np.array(a).reshape(-1, 1)  # rechape for broadcast
         y = (a_np*a_np)*np.sin(x)
         return y
+    
+
     # math part
     x = np.linspace(0, 6*np.pi, 1000)
     y = func(a, x) 
@@ -67,10 +94,86 @@ def generate_graph(a: List[float], show_figure: bool = False, save_path: str | N
         plt.savefig(save_path)
     if show_figure:
         plt.show()
+    
+    plt.close(fig)
 
 
-def generate_sinus(show_figure: bool = False, save_path: str | None = None):
-    pass
+def generate_sinus(show_figure: bool = False, save_path: str | None = None)->None:
+    '''
+    Task 3: Advanced vizualtization of sin signal
+    Parametrs:
+        show_figure: [bool=False]: flag for plots showing
+        save_path:   [str | None]: path to saving output of plotting
+    Return:
+        None
+    '''
+    
+    
+    def func1(t:np.array)->np.array:
+        '''
+        Implementation of math function by 1
+        Params:
+            t: [np.array]: input time series
+        Returm:
+            [np.array]: time series by function
+        '''
+        y = 0.5*np.cos(np.pi*t/50)
+        return y
+    
+    
+    def func2(t:np.array)->np.array:
+        '''
+        Implementation of math function by 1
+        Params:
+            t: [np.array]: input time series
+        Returm:
+            [np.array]: time series by function
+        '''
+        sin_sum = np.sin(np.pi*t)+np.sin(3*np.pi*t/2)
+        y = 0.25*sin_sum
+        return y
+    
+    
+    # math part
+    X_START = 0
+    X_STOP = 100
+    x = np.linspace(X_START, X_STOP, 1000)
+    
+    y1 = func1(x)
+    y2 = func2(x)
+    y3 = y1+y2
+    y_base = [y1, y2]
+
+    # display
+    fig, axs = plt.subplots(3, 1, figsize=(10,6))
+    for i, ax in enumerate(axs):
+        ax.set_xlim(0, 100)
+        ax.xaxis.set_major_locator(plt.MultipleLocator(25))
+        ax.set_ylabel(rf'$f_{{{i+1}}}(t)$')
+        ax.set_ylim(-0.8, 0.8)
+        ax.yaxis.set_major_locator(plt.MultipleLocator(0.4))
+        if i < 2:
+            # plot f1, f2 with general configuration
+            ax.tick_params(axis='x', labelbottom=False, labeltop=False)
+            ax.plot(x, y_base[i])
+        else:
+            # plot f3 with specific configurations
+            ax.tick_params(axis='x', labelbottom=True, labeltop=False)
+            for i in range(len(y3)-1):
+                if y3[i] >= y1[i]:
+                    ax.plot(x[i:i+2], y3[i:i+2], color='green')
+                elif x[i] < 50:
+                    ax.plot(x[i:i+2], y3[i:i+2], color='red')
+                else:
+                    ax.plot(x[i:i+2], y3[i:i+2], color='darkorange')
+    
+    # postprocessing
+    if save_path:
+        plt.savefig(save_path)
+    if show_figure:
+        plt.show()
+    
+    plt.close(fig)
 
 
 def download_data() -> Dict[str, List[Any]]:
