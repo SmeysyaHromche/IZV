@@ -121,28 +121,43 @@ def generate_sinus(show_figure: bool = False, save_path: str | None = None)->Non
         return y
     
     
+def generate_sinus(show_figure: bool = False, save_path: str | None = None)->None:
+    def func1(t:np.array)->np.array:
+        '''
+        Implementation of math function by 1
+        Params:
+        t: [np.array]: input time series
+        Returm:
+        [np.array]: time series by function
+        '''
+        y = 0.5*np.cos(np.pi*t/50)
+        return y
     def func2(t:np.array)->np.array:
         '''
         Implementation of math function by 1
         Params:
-            t: [np.array]: input time series
+        t: [np.array]: input time series
         Returm:
-            [np.array]: time series by function
+        [np.array]: time series by function
         '''
         sin_sum = np.sin(np.pi*t)+np.sin(3*np.pi*t/2)
         y = 0.25*sin_sum
         return y
-    
-    
     # math part
     X_START = 0
     X_STOP = 100
-    x = np.linspace(X_START, X_STOP, 1000)
+    x = np.linspace(X_START, X_STOP, 10000)
     
     y1 = func1(x)
     y2 = func2(x)
     y3 = y1+y2
     y_base = [y1, y2]
+
+    # masks for separate different area of third function graph
+    y3_not_green = np.ma.masked_where(y3 >= y1, y3)
+    y3_green = np.ma.masked_where(y3 < y1, y3)
+    x3_red = np.where(x < 50)[0]
+    x3_orange = np.where(x >= 50)[0]
 
     # display
     fig, axs = plt.subplots(3, 1, figsize=(10,6))
@@ -153,19 +168,20 @@ def generate_sinus(show_figure: bool = False, save_path: str | None = None)->Non
         ax.set_ylim(-0.8, 0.8)
         ax.yaxis.set_major_locator(plt.MultipleLocator(0.4))
         if i < 2:
-            # plot f1, f2 with general configuration
             ax.tick_params(axis='x', labelbottom=False, labeltop=False)
             ax.plot(x, y_base[i])
         else:
-            # plot f3 with specific configurations
             ax.tick_params(axis='x', labelbottom=True, labeltop=False)
-            for i in range(len(y3)-1):
-                if y3[i] >= y1[i]:
-                    ax.plot(x[i:i+2], y3[i:i+2], color='green')
-                elif x[i] < 50:
-                    ax.plot(x[i:i+2], y3[i:i+2], color='red')
-                else:
-                    ax.plot(x[i:i+2], y3[i:i+2], color='darkorange')
+            ax.plot(x, y3_green, color='green')
+            ax.plot(x[:len(x)//2],y3_not_green[:len(x)//2], color='red')
+            ax.plot(x[len(x)//2:], y3_not_green[len(x)//2:], color='darkorange')
+            
+    if save_path:
+        plt.savefig(save_path)
+    if show_figure:
+        plt.show()
+    
+    plt.close()
     
     # postprocessing
     if save_path:
