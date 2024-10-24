@@ -83,8 +83,8 @@ def generate_graph(a: List[float], show_figure: bool = False, save_path: str | N
     ax.set_xlabel(r'$x$')
     ax.set_ylabel(r'$f_{a}(x)$')
     # plotting
-    for i, _ in enumerate(a):
-        ax.plot(x, y[i], label=rf'$y_{{{i}}}(x)$')
+    for i, a_i in enumerate(a):
+        ax.plot(x, y[i], label=rf'$y_{{{a_i}}}(x)$')
         ax.fill_between(x, y[i], alpha=0.1)
     # set legend position
     ax.legend(loc='upper center', ncol=len(a), bbox_to_anchor=(0.5, 1.15))
@@ -107,21 +107,7 @@ def generate_sinus(show_figure: bool = False, save_path: str | None = None)->Non
     Return:
         None
     '''
-    
-    
-    def func1(t:np.array)->np.array:
-        '''
-        Implementation of math function by 1
-        Params:
-            t: [np.array]: input time series
-        Returm:
-            [np.array]: time series by function
-        '''
-        y = 0.5*np.cos(np.pi*t/50)
-        return y
-    
-    
-def generate_sinus(show_figure: bool = False, save_path: str | None = None)->None:
+
     def func1(t:np.array)->np.array:
         '''
         Implementation of math function by 1
@@ -132,6 +118,7 @@ def generate_sinus(show_figure: bool = False, save_path: str | None = None)->Non
         '''
         y = 0.5*np.cos(np.pi*t/50)
         return y
+    
     def func2(t:np.array)->np.array:
         '''
         Implementation of math function by 1
@@ -143,6 +130,7 @@ def generate_sinus(show_figure: bool = False, save_path: str | None = None)->Non
         sin_sum = np.sin(np.pi*t)+np.sin(3*np.pi*t/2)
         y = 0.25*sin_sum
         return y
+    
     # math part
     X_START = 0
     X_STOP = 100
@@ -154,34 +142,26 @@ def generate_sinus(show_figure: bool = False, save_path: str | None = None)->Non
     y_base = [y1, y2]
 
     # masks for separate different area of third function graph
-    y3_not_green = np.ma.masked_where(y3 >= y1, y3)
-    y3_green = np.ma.masked_where(y3 < y1, y3)
-    x3_red = np.where(x < 50)[0]
-    x3_orange = np.where(x >= 50)[0]
+    y3_not_green = np.ma.masked_where(y3 > y1, y3)
+    y3_green = np.ma.masked_where(y3 <= y1, y3)
 
     # display
     fig, axs = plt.subplots(3, 1, figsize=(10,6))
     for i, ax in enumerate(axs):
         ax.set_xlim(0, 100)
         ax.xaxis.set_major_locator(plt.MultipleLocator(25))
-        ax.set_ylabel(rf'$f_{{{i+1}}}(t)$')
         ax.set_ylim(-0.8, 0.8)
         ax.yaxis.set_major_locator(plt.MultipleLocator(0.4))
         if i < 2:
+            ax.set_ylabel(rf'$f_{{{i+1}}}(t)$')
             ax.tick_params(axis='x', labelbottom=False, labeltop=False)
             ax.plot(x, y_base[i])
         else:
+            ax.set_ylabel(r'$f_{1}(t) + f_{2}(t)$')
             ax.tick_params(axis='x', labelbottom=True, labeltop=False)
             ax.plot(x, y3_green, color='green')
             ax.plot(x[:len(x)//2],y3_not_green[:len(x)//2], color='red')
             ax.plot(x[len(x)//2:], y3_not_green[len(x)//2:], color='darkorange')
-            
-    if save_path:
-        plt.savefig(save_path)
-    if show_figure:
-        plt.show()
-    
-    plt.close()
     
     # postprocessing
     if save_path:
@@ -193,7 +173,39 @@ def generate_sinus(show_figure: bool = False, save_path: str | None = None)->Non
 
 
 def download_data() -> Dict[str, List[Any]]:
-    pass
+    '''
+    Downloading table from web
+    Return:
+        Dict[str, List[Any]]: table form web after formatting
+    '''
+    # convert string with geo coordination to float
+    coord_to_float = lambda x: float(x[:-1].replace(',', '.'))
+    # remove white space from string with float number and convert it to float
+    nums_without_wh_sp = lambda x: float(''.join(ch for ch in x if ch.isdigit() or ch in ',.').replace(',', '.'))
+    
+    # target structure
+    out = {'positions':[], 'lats': [], 'longs': [], 'heights':[]}
+    
+    # endpoint
+    URL_TABLE = 'https://ehw.fit.vutbr.cz/izv/st_zemepis_cz.html'
+    
+    # download page
+    response = requests.get(URL_TABLE)
+    if response.status_code != 200:
+        return dict()
+    
+    # transform to issie parsed structure
+    soup = BeautifulSoup(response.content, 'html.parser')
+    table = soup.find_all('table')[-1].find_all('tr')[1:] # last table
+    # parsing
+    for line in table:
+        subinfo = line.find_all('td')[::2]
+        out['positions'].append( subinfo[0].find('strong').text)
+        out['lats'].append(coord_to_float(subinfo[1].text))
+        out['longs'].append(coord_to_float(subinfo[2].text))
+        out['heights'].append(nums_without_wh_sp(subinfo[3].text))
+    
+    return out
 
 
 if __name__ == "main":
