@@ -194,7 +194,7 @@ def download_data() -> Dict[str, List[Any]]:
     if response.status_code != 200:
         return dict()
     
-    # transform to issie parsed structure
+    # transform to soap parsed structure
     soup = BeautifulSoup(response.content, 'html.parser')
     table = soup.find_all('table')[-1].find_all('tr')[1:] # last table
     # parsing
