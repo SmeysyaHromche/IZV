@@ -112,6 +112,17 @@ def plot_state(df: pd.DataFrame, fig_location: str = None,
 # Ukol4: alkohol a následky v krajích
 def plot_alcohol(df: pd.DataFrame, df_consequences : pd.DataFrame, 
                  fig_location: str = None, show_figure: bool = False):
+    '''
+    Create accident number chart and save it on target file with optional displaying.
+    
+    Args:
+        df (pd.DataFrame): input data for accident.
+        fig_location (str|None, optional): path/name for target file for saving. Defaults to None.
+        show_figure (bool): flag for optional displaying. Defaults to False.
+
+    Returns:
+        None
+    '''
     pass
 
 # Ukol 5: Druh nehody (srážky) v čase
