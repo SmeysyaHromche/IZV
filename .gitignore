@@ -2,4 +2,7 @@ part01/__pycache__
 part01/.pytest_cache
 part02/data_23_24/*
 part02/data_23_24.zip
+part02/data_23_24_my.zip
+part02/data_23_24_my/*
+part02/__pycache__
 .idea
