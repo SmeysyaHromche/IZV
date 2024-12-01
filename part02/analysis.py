@@ -98,7 +98,7 @@ def plot_state(df: pd.DataFrame, fig_location: str = None,
     if show_figure:
         plt.show()
     if fig_location is not None:
-        plt.savefig(fig_location)
+        statistic.savefig(fig_location)
 
 # Ukol4: alkohol a následky v krajích
 def plot_alcohol(df: pd.DataFrame, df_consequences : pd.DataFrame, 
