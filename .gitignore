@@ -6,4 +6,10 @@ part02/data_23_24_my.zip
 part02/data_23_24_my/*
 part02/__pycache__
 part03/__pycache__
+part03/accidents.pkl.gz
+part03/consequences.pkl.gz
+part03/pedestrians.pkl.gz
+part03/vehicles.pkl.gz
+part03/locations.pkl.gz
+part03/data/*
 .idea
