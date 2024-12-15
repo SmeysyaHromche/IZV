@@ -64,9 +64,9 @@ def parse_data(df: pd.DataFrame, verbose: bool = False) -> pd.DataFrame:
 # Ukol 3: počty nehod v jednotlivých regionech podle stavu vozovky
 def plot_state(df: pd.DataFrame, fig_location: str = None,
                     show_figure: bool = False)->None:
-    '''
+    """
     Create accident number chart and save it on target file with optional displaying.
-    
+
     Args:
         df (pd.DataFrame): input data for accident.
         fig_location (str|None, optional): path/name for target file for saving. Defaults to None.
@@ -74,7 +74,7 @@ def plot_state(df: pd.DataFrame, fig_location: str = None,
 
     Returns:
         None
-    '''
+    """
     # aux const
     DICT_SURFACE_CONDITION = {1:'povrch suchý', 2:'povrch suchý', 3:'povrch mokrý', 4: 'na vozovce je bláto', 5:'na vozovce je náledí, ujetí sníh', 6:'na vozovce je náledí, ujetí sníh'}
     SURFACE_CONDITION = set(DICT_SURFACE_CONDITION.values())
