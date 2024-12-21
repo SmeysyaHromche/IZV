@@ -6,11 +6,8 @@ import geopandas
 import matplotlib
 import matplotlib.pyplot as plt
 import contextily as ctx
-from sklearn.cluster import DBSCAN, KMeans, AgglomerativeClustering
-from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import AgglomerativeClustering
 import numpy as np
-from shapely.geometry import box
-from torch import unique
 
 matplotlib.use('TkAgg')
 
