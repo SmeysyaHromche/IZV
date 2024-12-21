@@ -121,7 +121,7 @@ def create_plot(df: pd.DataFrame, fig_location: str = None, show_figure: bool = 
     # plot drugs relationships
     aux_drug = df.copy()
     aux_drug = aux_drug[aux_drug['substances'] == 'Drug']
-    aux_drug['drug_type'] = aux_drug['drug'].map({1: 'THC', 2: 'AMP', 3: 'MET', 4: 'OPI', 5: 'BENZ', 6: 'ather'})
+    aux_drug['drug type'] = aux_drug['drug'].map({1: 'THC', 2: 'AMP', 3: 'MET', 4: 'OPI', 5: 'BENZ', 6: 'ather'})
 
     # drugs and age
     aux_drug_age = aux_drug['age_group'].value_counts()
@@ -134,7 +134,7 @@ def create_plot(df: pd.DataFrame, fig_location: str = None, show_figure: bool = 
     ax2.legend(ptch2, aux_drug_sex.index, title='Sex groups', loc="best")
     ax2.set_title('Drugs and Sex')
     # type of drugs
-    aux_drug_type = aux_drug['drug_type'].value_counts()
+    aux_drug_type = aux_drug['drug type'].value_counts()
     ptch3, _, _ = ax3.pie(aux_drug_type, labels=None, autopct='%1.1f%%', startangle=90)
     ax3.legend(ptch3, aux_drug_type.index, title='Drugs groups', loc="best")
     ax3.set_title('Types of drugs')
@@ -168,12 +168,12 @@ def create_table(df: pd.DataFrame, ltx_table:str=None, show_table:bool=False) ->
         None
     """
     df_aux = df[df['substances'] == 'Drug'].copy()
-    df_aux['drug_type'] = df_aux['drug'].map({1: 'THC', 2: 'AMP', 3: 'MET', 4: 'OPI', 5: 'BENZ', 6: 'ather'})
-    df_aux = df_aux[['drug_type', 'region', 'sex', 'month', 'age']]
+    df_aux['drug type'] = df_aux['drug'].map({1: 'THC', 2: 'AMP', 3: 'MET', 4: 'OPI', 5: 'BENZ', 6: 'ather'})
+    df_aux = df_aux[['drug type', 'region', 'sex', 'month', 'age']]
 
-    age_mean_by_drug = df_aux.groupby('drug_type')['age'].mean().round().astype(int)
-    table = df_aux.groupby('drug_type').agg(lambda x: x.mode()[0]).reset_index()
-    table['age'] = table['drug_type'].map(age_mean_by_drug)
+    age_mean_by_drug = df_aux.groupby('drug type')['age'].mean().round().astype(int)
+    table = df_aux.groupby('drug type').agg(lambda x: x.mode()[0]).reset_index()
+    table['age'] = table['drug type'].map(age_mean_by_drug)
 
     if ltx_table:  # save latex table
         latx = table.to_latex(caption='Average pedestrian victim under the influence of a particular type of drug',
