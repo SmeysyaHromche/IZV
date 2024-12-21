@@ -1,4 +1,3 @@
-import re
 import pandas as pd
 import matplotlib
 import seaborn as sns
@@ -31,7 +30,7 @@ def age_num_to_age_group(age: int) -> str:
         return 'Old'
 
 
-def get_substances_type(row) -> str:
+def get_substances_type(row:pd.Series) -> str:
     """
     Get substances by alcohol and drugs
     Args:
@@ -162,7 +161,7 @@ def create_table(df: pd.DataFrame, ltx_table:str=None, show_table:bool=False) ->
 
     Args:
         df: input data
-        create_ltx_table: flag for creating latex table
+        ltx_table: flag for creating latex table
         show_table: flag for display table in text format
 
     Returns:
@@ -188,6 +187,8 @@ def create_table(df: pd.DataFrame, ltx_table:str=None, show_table:bool=False) ->
         print('==========================================================================')
         print(table)
         print('==========================================================================')
+        print()
+        print()
 
 
 def create_data_in_text(df: pd.DataFrame, df_substances:pd.DataFrame) -> None:
@@ -206,12 +207,13 @@ def create_data_in_text(df: pd.DataFrame, df_substances:pd.DataFrame) -> None:
     drugs_ped_death = round(drugs_ped_death)
     drugs_ped_avg_loss = df_substances[df_substances['substances'] == 'Drug']['p14*100'].agg(['min', 'max', 'mean']).round().astype(int)
 
-
     print(f'The ratios of drug-involved pedestrian accidents to all accidents: {drugs_ped} %')
     print(f'The ratio of drug-involved pedestrian fatality accidents to all pedestrian fatality accidents: {drugs_ped_death} %')
     print(f'The minimum loss by accident with drug-involved pedestrian (CZ): {drugs_ped_avg_loss['min']}')
     print(f'The mean loss by accident with drug-involved pedestrian (CZ): {drugs_ped_avg_loss['mean']}')
     print(f'The maximum loss by accident with drug-involved pedestrian (CZ): {drugs_ped_avg_loss['max']}')
+    print()
+    print()
 
 
 if __name__ == '__main__':
