@@ -22,7 +22,7 @@ def make_geo(df_accidents: pd.DataFrame, df_locations: pd.DataFrame) -> geopanda
         Accidents data with geo information
     """
     df = pd.merge(df_accidents, df_locations, on='p1')  # merge accidents and geo data to one frame
-    df = df[(df['d'].notna()) & (df['e'].notna()) & (df['d'] != 0) & (df['e'] != 0)]  # clean d and e col
+    df = df[(df['d'].notna()) & (df['e'].notna())]  # clean d and e col
     df['d'], df['e'] = np.where(df['d'] > df['e'],
                                 (df['d'].values, df['e'].values),
                                 (df['e'].values, df['d'].values))  # check swapped d and e data
@@ -131,7 +131,6 @@ def plot_cluster(gdf: geopandas.GeoDataFrame, fig_location: str = None,
         plt.show()
 
 if __name__ == "__main__":
-    # zde muzete delat libovolne modifikace
     df_accidents = pd.read_pickle("accidents.pkl.gz")
     df_locations = pd.read_pickle("locations.pkl.gz")
     gdf = make_geo(df_accidents, df_locations)
